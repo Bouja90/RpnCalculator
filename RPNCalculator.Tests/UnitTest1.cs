@@ -9,7 +9,7 @@ namespace RPNCalculator.Tests
     public class Tests
     {
         private RpnCalculatorController rpnCalculatorController;
-        
+
         [SetUp]
         public void Setup()
         {
@@ -31,7 +31,7 @@ namespace RPNCalculator.Tests
             var actionResultGet = rpnCalculatorController.GetStack(guid);
             Assert.IsTrue(actionResultGet.Result is OkObjectResult);
 
-            Guid guid2 = new Guid();
+            Guid guid2 = Guid.NewGuid();
             actionResultGet = rpnCalculatorController.GetStack(guid2);
             Assert.IsTrue(actionResultGet.Result is NotFoundResult);
         }
@@ -55,5 +55,20 @@ namespace RPNCalculator.Tests
             Assert.AreEqual(value.Pop(), 2);
         }
 
+        [Test]
+        public void TestDeleteStack()
+        {
+            Guid guid = Guid.NewGuid();
+            var actionResult = rpnCalculatorController.DeleteStack(guid);
+            Assert.IsTrue(actionResult is NotFoundResult);
+
+            var actionResultCreate = rpnCalculatorController.CreateStack();
+            Assert.IsTrue(actionResultCreate.Result is CreatedAtActionResult);
+            var createdAtActionResult = (CreatedAtActionResult)actionResultCreate.Result;
+            Guid guid2 = (Guid)createdAtActionResult.Value;
+
+            actionResult = rpnCalculatorController.DeleteStack(guid2);
+            Assert.IsTrue(actionResult is OkResult);
+        }
     }
 }
